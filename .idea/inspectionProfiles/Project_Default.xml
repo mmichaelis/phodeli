@@ -45,8 +45,83 @@
     <inspection_tool class="HtmlTagCanBeJavadocTag" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="InconsistentLineSeparators" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="InterfaceMayBeAnnotatedFunctional" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JavaDoc" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Production" level="WARNING" enabled="true">
+        <option name="TOP_LEVEL_CLASS_OPTIONS">
+          <value>
+            <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="public" />
+            <option name="REQUIRED_TAGS" value="@author@since@param" />
+          </value>
+        </option>
+        <option name="INNER_CLASS_OPTIONS">
+          <value>
+            <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="protected" />
+            <option name="REQUIRED_TAGS" value="" />
+          </value>
+        </option>
+        <option name="METHOD_OPTIONS">
+          <value>
+            <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="protected" />
+            <option name="REQUIRED_TAGS" value="@return@param@throws or @exception" />
+          </value>
+        </option>
+        <option name="FIELD_OPTIONS">
+          <value>
+            <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+            <option name="REQUIRED_TAGS" value="" />
+          </value>
+        </option>
+        <option name="IGNORE_DEPRECATED" value="false" />
+        <option name="IGNORE_JAVADOC_PERIOD" value="true" />
+        <option name="IGNORE_DUPLICATED_THROWS" value="false" />
+        <option name="IGNORE_POINT_TO_ITSELF" value="false" />
+        <option name="myAdditionalJavadocTags" value="" />
+        <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="public" />
+        <option name="REQUIRED_TAGS" value="@author@since" />
+      </scope>
+      <option name="TOP_LEVEL_CLASS_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="package" />
+          <option name="REQUIRED_TAGS" value="" />
+        </value>
+      </option>
+      <option name="INNER_CLASS_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="" />
+        </value>
+      </option>
+      <option name="METHOD_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="@return@param@throws or @exception" />
+        </value>
+      </option>
+      <option name="FIELD_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="" />
+        </value>
+      </option>
+      <option name="IGNORE_DEPRECATED" value="false" />
+      <option name="IGNORE_JAVADOC_PERIOD" value="false" />
+      <option name="IGNORE_DUPLICATED_THROWS" value="false" />
+      <option name="IGNORE_POINT_TO_ITSELF" value="false" />
+      <option name="myAdditionalJavadocTags" value="" />
+      <IGNORE_DUPLICATED_THROWS_TAGS value="false" />
+    </inspection_tool>
     <inspection_tool class="JavadocHtmlLint" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="LiteralAsArgToStringEquals" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="REPORT_VARIABLES" value="false" />
+      <option name="REPORT_PARAMETERS" value="true" />
+      <option name="REPORT_CATCH_PARAMETERS" value="false" />
+      <option name="REPORT_FOREACH_PARAMETERS" value="false" />
+    </inspection_tool>
+    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />
+      <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
+    </inspection_tool>
     <inspection_tool class="MagicNumber" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodCanBeVariableArityMethod" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MethodCount" enabled="true" level="WARNING" enabled_by_default="true">
@@ -57,7 +132,7 @@
     <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MissingPackageInfo" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="m_requireAnnotationsFirst" value="true" />
+      <option name="m_requireAnnotationsFirst" value="false" />
     </inspection_tool>
     <inspection_tool class="NonFinalUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="OnDemandImport" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -68,6 +143,10 @@
     <inspection_tool class="RedundantFieldInitialization" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantSuppression" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SwitchStatementsWithoutDefault" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreFullyCoveredEnums" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ThrowsRuntimeException" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TypeMayBeWeakened" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
       <option name="useParameterizedTypeForCollectionMethods" value="true" />
