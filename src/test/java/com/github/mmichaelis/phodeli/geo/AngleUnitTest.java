@@ -2,6 +2,7 @@ package com.github.mmichaelis.phodeli.geo;
 
 import static com.github.mmichaelis.phodeli.geo.AngleUnit.DEGREES;
 import static com.github.mmichaelis.phodeli.geo.AngleUnit.RADIANS;
+import static com.github.mmichaelis.phodeli.test.SerializableCondition.serializable;
 import static java.lang.Double.MAX_VALUE;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
@@ -13,15 +14,6 @@ import static java.util.Locale.getDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.data.Offset;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.function.ThrowingConsumer;
-import org.slf4j.Logger;
-
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,6 +24,15 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.slf4j.Logger;
+
 /**
  * Tests {@link AngleUnit}.
  *
@@ -41,11 +42,25 @@ import java.util.stream.Stream;
 class AngleUnitTest {
 
   private static final Logger LOG = getLogger(lookup().lookupClass());
+  /**
+   * Using fixed seed to provide reproducible test runs.
+   */
+  private static final long RANDOM_SEED = 0L;
 
   private static final Offset<Double> TOLERANCE = Offset.offset(0.0001D);
-  private static final int TEST_RUNS = 20;
+  private static final long TEST_RUNS = 20L;
   private static final Function<TestInfo, String> TEST_NAME =
     input -> input.getTestMethod().map(Method::getName).orElse("unknown");
+
+  @Test
+  void degreesIsSerializable() {
+    assertThat(DEGREES).is(serializable());
+  }
+
+  @Test
+  void radiansIsSerializable() {
+    assertThat(RADIANS).is(serializable());
+  }
 
   @Test
   void radianHasExpectedSymbol() {
@@ -65,7 +80,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> degreeConvertingToItselfHasEqualValue(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, 720D);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
     Function<Double, String>
       displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
@@ -80,7 +96,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> degreeCorrectlyConvertedToRadian(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, 720D);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
     Function<Double, String>
       displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
@@ -95,7 +112,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> radianConvertingToItselfHasEqualValue(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, PI * 2);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String>
       displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
@@ -110,7 +128,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> radianCorrectlyConvertedToDegree(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, PI * 2);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String> displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
     ThrowingConsumer<Double> testExecutor = (input) -> {
@@ -210,7 +229,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> radiansFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, PI * 2);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String>
       displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
@@ -221,7 +241,8 @@ class AngleUnitTest {
 
   @TestFactory
   Stream<DynamicTest> degreesFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, 720D);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
     Function<Double, String>
       displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
@@ -237,7 +258,8 @@ class AngleUnitTest {
     DecimalFormat df = (DecimalFormat) nf;
     df.applyPattern("#,##0.##");
 
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, PI * 2);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String> displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
     ThrowingConsumer<Double> testExecutor = (input) -> {
@@ -263,7 +285,8 @@ class AngleUnitTest {
     DecimalFormat df = (DecimalFormat) nf;
     df.applyPattern("#,##0.##");
 
-    Iterator<Double> inputGenerator = new ValueGenerator(TEST_RUNS, PI * 2);
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String> displayNameGenerator =
       (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
     ThrowingConsumer<Double> testExecutor = (input) -> {
@@ -282,29 +305,4 @@ class AngleUnitTest {
     return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
 
-  private static final class ValueGenerator implements Iterator<Double> {
-
-    private final int runs;
-    private final double maxValue;
-    private final Random random;
-    private int current;
-
-    private ValueGenerator(final int runs, final double maxValue) {
-      this.runs = runs;
-      this.maxValue = maxValue;
-      random = new Random(0L);
-      current = 0;
-    }
-
-    @Override
-    public boolean hasNext() {
-      return current < runs;
-    }
-
-    @Override
-    public Double next() {
-      current++;
-      return random.nextDouble() * maxValue * 2 - maxValue;
-    }
-  }
 }

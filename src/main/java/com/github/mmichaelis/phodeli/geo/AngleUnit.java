@@ -5,11 +5,12 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.util.Locale.Category.FORMAT;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents the unit of an angle, i. e. either degree or radians.
@@ -25,16 +26,19 @@ public enum AngleUnit {
    */
   DEGREES("°", "#,##0.###'°'") {
     @Override
+    @Contract(pure = true)
     public double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit) {
       return sourceUnit.toDegrees(sourceAngle);
     }
 
     @Override
+    @Contract(pure = true)
     public double toDegrees(final double sourceAngle) {
       return sourceAngle;
     }
 
     @Override
+    @Contract(pure = true)
     public double toRadians(final double sourceAngle) {
       return Math.toRadians(sourceAngle);
     }
@@ -46,16 +50,19 @@ public enum AngleUnit {
    */
   RADIANS("rad", "#,##0.#####' rad'") {
     @Override
+    @Contract(pure = true)
     public double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit) {
       return sourceUnit.toRadians(sourceAngle);
     }
 
     @Override
+    @Contract(pure = true)
     public double toDegrees(final double sourceAngle) {
       return Math.toDegrees(sourceAngle);
     }
 
     @Override
+    @Contract(pure = true)
     public double toRadians(final double sourceAngle) {
       return sourceAngle;
     }
@@ -94,6 +101,7 @@ public enum AngleUnit {
    * @return the converted angle in this unit
    * @since 1.0.0
    */
+  @Contract(pure = true)
   public abstract double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit);
 
   /**
@@ -104,6 +112,7 @@ public enum AngleUnit {
    * @return the converted angle,
    * @since 1.0.0
    */
+  @Contract(pure = true)
   public abstract double toDegrees(double sourceAngle);
 
   /**
@@ -114,16 +123,18 @@ public enum AngleUnit {
    * @return the converted angle,
    * @since 1.0.0
    */
+  @Contract(pure = true)
   public abstract double toRadians(double sourceAngle);
 
   /**
-   * Formats the angle given the current default locale.
+   * Formats the angle using the current default locale.
    *
    * @param angle angle to format
    * @return formatted string with unit symbol
    * @since 1.0.0
    */
   @NotNull
+  @Contract(pure = true)
   public final String format(final double angle) {
     return format(angle, Locale.getDefault(FORMAT));
   }
@@ -137,6 +148,7 @@ public enum AngleUnit {
    * @since 1.0.0
    */
   @NotNull
+  @Contract(pure = true)
   public final String format(final double angle, @NotNull final Locale loc) {
     NumberFormat nf = NumberFormat.getNumberInstance(loc);
     DecimalFormat df = (DecimalFormat) nf;
@@ -151,6 +163,7 @@ public enum AngleUnit {
    * @return normalized angle
    * @since 1.0.0
    */
+  @Contract(pure = true)
   public final double normalized(final double sourceAngle) {
     double asRadians = toRadians(sourceAngle);
     return convert(atan2(sin(asRadians), cos(asRadians)), RADIANS);
@@ -163,6 +176,7 @@ public enum AngleUnit {
    * @since 1.0.0
    */
   @NotNull
+  @Contract(pure = true)
   public final String getSymbol() {
     return symbol;
   }
@@ -175,6 +189,7 @@ public enum AngleUnit {
    * @since 1.0.0
    */
   @NotNull
+  @Contract(pure = true)
   public final String getDecimalFormatPattern() {
     return decimalFormatPattern;
   }

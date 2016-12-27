@@ -128,11 +128,15 @@
             <emptyLine />
             <package name="jasmin" withSubpackages="true" static="false" />
             <emptyLine />
+            <package name="java" withSubpackages="true" static="false" />
+            <emptyLine />
             <package name="javancss" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="javanet" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="javassist" withSubpackages="true" static="false" />
+            <emptyLine />
+            <package name="javax" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="javazoom" withSubpackages="true" static="false" />
             <emptyLine />
@@ -249,10 +253,6 @@
             <package name="woolfel" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="wowza" withSubpackages="true" static="false" />
-            <emptyLine />
-            <package name="java" withSubpackages="true" static="false" />
-            <emptyLine />
-            <package name="javax" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="" withSubpackages="true" static="false" />
             <emptyLine />
@@ -379,6 +379,7 @@
           <option name="FOR_STATEMENT_WRAP" value="1" />
           <option name="ARRAY_INITIALIZER_WRAP" value="1" />
           <option name="ASSIGNMENT_WRAP" value="5" />
+          <option name="PLACE_ASSIGNMENT_SIGN_ON_NEXT_LINE" value="true" />
           <option name="IF_BRACE_FORCE" value="3" />
           <option name="DOWHILE_BRACE_FORCE" value="3" />
           <option name="WHILE_BRACE_FORCE" value="3" />
@@ -662,6 +663,5 @@
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="GoogleStyle" />
   </component>
 </project>
