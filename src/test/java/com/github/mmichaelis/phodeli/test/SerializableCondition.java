@@ -3,15 +3,16 @@ package com.github.mmichaelis.phodeli.test;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import org.assertj.core.api.Condition;
-import org.slf4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+
+import org.assertj.core.api.Condition;
+import org.jetbrains.annotations.Contract;
+import org.slf4j.Logger;
 
 /**
  * Tests serializable features of an object.
@@ -27,6 +28,7 @@ public final class SerializableCondition<T> extends Condition<T> {
     super("serializable");
   }
 
+  @Contract(pure = true)
   public static <T> Condition<T> serializable() {
     return new SerializableCondition<>();
   }
