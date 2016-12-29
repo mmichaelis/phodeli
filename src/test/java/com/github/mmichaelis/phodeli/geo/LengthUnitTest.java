@@ -41,7 +41,7 @@ class LengthUnitTest {
   @TestFactory
   Stream<DynamicTest> convertWorksAsExpected() {
     LengthUnit[] units = LengthUnit.values();
-    Iterator<LengthUnitConversionContract> inputGenerator =
+    Iterator<? extends SpecificationContract> inputGenerator =
       stream(units)
         .map(sourceUnit ->
                stream(units)
@@ -49,17 +49,17 @@ class LengthUnitTest {
                  .collect(toList()))
         .flatMap(Collection::stream)
         .iterator();
-    Function<LengthUnitConversionContract, String> displayNameGenerator =
-      LengthUnitConversionContract::describe;
-    ThrowingConsumer<LengthUnitConversionContract> testExecutor =
-      LengthUnitConversionContract::perform;
+    Function<SpecificationContract, String> displayNameGenerator =
+      SpecificationContract::describe;
+    ThrowingConsumer<SpecificationContract> testExecutor =
+      SpecificationContract::perform;
     return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
 
   @TestFactory
   Stream<DynamicTest> determinesCorrectMaxPrecision() {
     LengthUnit[] units = LengthUnit.values();
-    Iterator<MaxPrecisionContract> inputGenerator =
+    Iterator<? extends SpecificationContract> inputGenerator =
       stream(units)
         .map(sourceUnit ->
                stream(units)
@@ -67,10 +67,10 @@ class LengthUnitTest {
                  .collect(toList()))
         .flatMap(Collection::stream)
         .iterator();
-    Function<MaxPrecisionContract, String> displayNameGenerator =
-      MaxPrecisionContract::describe;
-    ThrowingConsumer<MaxPrecisionContract> testExecutor =
-      MaxPrecisionContract::perform;
+    Function<SpecificationContract, String> displayNameGenerator =
+      SpecificationContract::describe;
+    ThrowingConsumer<SpecificationContract> testExecutor =
+      SpecificationContract::perform;
     return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
 
