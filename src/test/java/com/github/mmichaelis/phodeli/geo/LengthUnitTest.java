@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.mmichaelis.phodeli.test.RestoreState;
+import com.github.mmichaelis.phodeli.test.SpecificationContract;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.SoftAssertions;
-import org.assertj.core.data.Offset;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DynamicTest;
@@ -36,7 +36,47 @@ class LengthUnitTest {
 
   private static final Pattern VALID_FORMAT_PATTERN = Pattern
     .compile("^[\\p{Digit}\\p{Punct}]+\\p{Space}?\\P{Digit}+");
-  private static final Offset<Double> TOLERANCE = Offset.offset(0.0001D);
+
+  private static Function<Double, Double> getDirectConvertFunction(
+    @NotNull final LengthUnit sourceUnit,
+    @NotNull final LengthUnit targetUnit) {
+    Function<Double, Double> convertFunction;
+    switch (targetUnit) {
+      case MILLIMETERS:
+        convertFunction = sourceUnit::toMillimeters;
+        break;
+      case CENTIMETERS:
+        convertFunction = sourceUnit::toCentimeters;
+        break;
+      case INCHES:
+        convertFunction = sourceUnit::toInches;
+        break;
+      case DECIMETERS:
+        convertFunction = sourceUnit::toDecimeters;
+        break;
+      case YARDS:
+        convertFunction = sourceUnit::toYards;
+        break;
+      case METERS:
+        convertFunction = sourceUnit::toMeters;
+        break;
+      case KILOMETERS:
+        convertFunction = sourceUnit::toKilometers;
+        break;
+      case MILES:
+        convertFunction = sourceUnit::toMiles;
+        break;
+      default:
+        throw new UnsupportedOperationException("Unknown target unit " + targetUnit);
+    }
+    return convertFunction;
+  }
+
+  @NotNull
+  private static Function<Double, Double> getIndirectConvertFunction(final LengthUnit sourceUnit,
+                                                                     final LengthUnit targetUnit) {
+    return value -> targetUnit.convert(value, sourceUnit);
+  }
 
   @TestFactory
   Stream<DynamicTest> convertWorksAsExpected() {
@@ -45,7 +85,15 @@ class LengthUnitTest {
       stream(units)
         .map(sourceUnit ->
                stream(units)
-                 .map(targetUnit -> new LengthUnitConversionContract(sourceUnit, targetUnit))
+                 .map(targetUnit -> new DoubleMeasureConversionContract<>(sourceUnit,
+                                                                          targetUnit,
+                                                                          getIndirectConvertFunction(
+                                                                            sourceUnit, targetUnit),
+                                                                          getIndirectConvertFunction(
+                                                                            targetUnit, sourceUnit),
+                                                                          getDirectConvertFunction(
+                                                                            sourceUnit, targetUnit)
+                 ))
                  .collect(toList()))
         .flatMap(Collection::stream)
         .iterator();
@@ -73,7 +121,6 @@ class LengthUnitTest {
       SpecificationContract::perform;
     return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
-
 
   @TestFactory
   Stream<DynamicTest> providesSymbol() {
@@ -139,15 +186,6 @@ class LengthUnitTest {
     return DynamicTest.stream(inputGenerator, nameGenerator, testExecutor);
   }
 
-  private interface SpecificationContract {
-
-    @NotNull
-    @Contract(pure = true)
-    String describe();
-
-    void perform();
-  }
-
   private static final class MaxPrecisionContract implements SpecificationContract {
 
     @NotNull
@@ -195,97 +233,4 @@ class LengthUnitTest {
     }
   }
 
-  private static final class LengthUnitConversionContract implements SpecificationContract {
-
-    @NotNull
-    private final LengthUnit sourceUnit;
-    @NotNull
-    private final LengthUnit targetUnit;
-    @NotNull
-    private final Function<Double, Double> indirectConvertFunction;
-    @NotNull
-    private final Function<Double, Double> directConvertFunction;
-
-    private LengthUnitConversionContract(@NotNull final LengthUnit sourceUnit,
-                                         @NotNull final LengthUnit targetUnit) {
-      this.sourceUnit = sourceUnit;
-      this.targetUnit = targetUnit;
-      indirectConvertFunction = input -> targetUnit.convert(input, sourceUnit);
-      switch (targetUnit) {
-        case MILLIMETERS:
-          directConvertFunction = sourceUnit::toMillimeters;
-          break;
-        case CENTIMETERS:
-          directConvertFunction = sourceUnit::toCentimeters;
-          break;
-        case INCHES:
-          directConvertFunction = sourceUnit::toInches;
-          break;
-        case DECIMETERS:
-          directConvertFunction = sourceUnit::toDecimeters;
-          break;
-        case YARDS:
-          directConvertFunction = sourceUnit::toYards;
-          break;
-        case METERS:
-          directConvertFunction = sourceUnit::toMeters;
-          break;
-        case KILOMETERS:
-          directConvertFunction = sourceUnit::toKilometers;
-          break;
-        case MILES:
-          directConvertFunction = sourceUnit::toMiles;
-          break;
-        default:
-          throw new UnsupportedOperationException("Unknown target unit " + targetUnit);
-      }
-    }
-
-    private void assertCanConvertToTargetUnit(
-      @NotNull final SoftAssertions assertions,
-      @NotNull final Function<Double, Double> convertFunction) {
-      double amount = 1D;
-      double result = convertFunction.apply(amount);
-      float orderUnitPrecision = Math.signum(sourceUnit.compareTo(targetUnit));
-      if (orderUnitPrecision < 0D) {
-        assertions.assertThat(result).isLessThan(amount);
-      } else if (orderUnitPrecision > 0D) {
-        assertions.assertThat(result).isGreaterThan(amount);
-      } else {
-        assertions.assertThat(result).isCloseTo(amount, TOLERANCE);
-      }
-    }
-
-    private void canConvertDirectlyToTargetUnit(@NotNull final SoftAssertions assertions) {
-      assertCanConvertToTargetUnit(assertions, directConvertFunction);
-    }
-
-    private void canConvertIndirectlyToTargetUnit(@NotNull final SoftAssertions assertions) {
-      assertCanConvertToTargetUnit(assertions, indirectConvertFunction);
-    }
-
-    private void backAndForthProvidesSimilarResult(@NotNull final SoftAssertions assertions) {
-      double amount = 1D;
-      double result1 = targetUnit.convert(amount, sourceUnit);
-      double result2 = sourceUnit.convert(result1, targetUnit);
-      assertions.assertThat(result2).isCloseTo(amount, TOLERANCE);
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public String describe() {
-      return "Converting " + sourceUnit + " to " + targetUnit;
-    }
-
-
-    public void perform() {
-      SoftAssertions assertions = new SoftAssertions();
-      canConvertDirectlyToTargetUnit(assertions);
-      canConvertIndirectlyToTargetUnit(assertions);
-      backAndForthProvidesSimilarResult(assertions);
-      assertions.assertAll();
-    }
-
-
-  }
 }

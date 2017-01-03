@@ -1,5 +1,6 @@
 package com.github.mmichaelis.phodeli.geo;
 
+import static com.github.mmichaelis.phodeli.geo.Angle.angle;
 import static com.github.mmichaelis.phodeli.geo.Angle.degrees;
 import static com.github.mmichaelis.phodeli.geo.Angle.radians;
 import static com.github.mmichaelis.phodeli.geo.AngleUnit.DEGREES;
@@ -9,6 +10,7 @@ import static com.github.mmichaelis.phodeli.test.SerializableCondition.serializa
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.toRadians;
+import static java.util.Arrays.stream;
 import static java.util.Collections.sort;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Locale.ROOT;
@@ -18,13 +20,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.common.testing.EqualsTester;
 
 import com.github.mmichaelis.phodeli.test.RestoreState;
+import com.github.mmichaelis.phodeli.test.SpecificationContract;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.data.Offset;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 /**
  * Tests {@link Angle}.
@@ -48,6 +59,25 @@ class AngleTest {
     assertions.assertThat(degrees).is(serializable());
     assertions.assertThat(radians).is(serializable());
     assertions.assertAll();
+  }
+
+  @TestFactory
+  @NotNull
+  Stream<@NotNull DynamicTest> canTransformToOtherUnit() {
+    AngleUnit[] units = AngleUnit.values();
+    Iterator<? extends SpecificationContract> inputGenerator =
+      stream(units)
+        .map(sourceUnit ->
+               stream(units)
+                 .map(targetUnit -> new AngleTransformContract(sourceUnit, targetUnit))
+                 .collect(toList()))
+        .flatMap(Collection::stream)
+        .iterator();
+    Function<SpecificationContract, String> displayNameGenerator =
+      SpecificationContract::describe;
+    ThrowingConsumer<SpecificationContract> testExecutor =
+      SpecificationContract::perform;
+    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
 
   @Test
@@ -192,5 +222,39 @@ class AngleTest {
       .addEqualityGroup(Angle.degrees(PI), Angle.degrees(PI))
       .addEqualityGroup(Angle.radians(PI), Angle.radians(PI))
       .testEquals();
+  }
+
+  private static final class AngleTransformContract implements SpecificationContract {
+
+    @NotNull
+    private final AngleUnit sourceUnit;
+    @NotNull
+    private final AngleUnit targetUnit;
+
+    private AngleTransformContract(@NotNull final AngleUnit sourceUnit, @NotNull final AngleUnit targetUnit) {
+      this.sourceUnit = sourceUnit;
+      this.targetUnit = targetUnit;
+    }
+
+    @Override
+    public @NotNull String describe() {
+      return "Transforming " + sourceUnit + " to " + targetUnit;
+    }
+
+    @Override
+    public void perform() {
+      double sourceAmount = 1D;
+      Angle sourceAngle = angle(sourceAmount, sourceUnit);
+      Angle targetAngle = sourceAngle.transform(targetUnit);
+      SoftAssertions assertions = new SoftAssertions();
+      if (sourceUnit == targetUnit) {
+        assertions.assertThat(targetAngle).isSameAs(sourceAngle);
+      } else {
+        assertions.assertThat(targetAngle).isNotEqualTo(sourceAngle);
+        assertions.assertThat(targetAngle.get(sourceUnit))
+          .isCloseTo(sourceAmount, TOLERANCE);
+      }
+      assertions.assertAll();
+    }
   }
 }

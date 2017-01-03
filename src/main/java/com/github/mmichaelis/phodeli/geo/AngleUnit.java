@@ -3,11 +3,6 @@ package com.github.mmichaelis.phodeli.geo;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-import static java.util.Locale.Category.FORMAT;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -18,17 +13,17 @@ import org.jetbrains.annotations.NotNull;
  * @author Mark Michaelis
  * @since 1.0.0
  */
-public enum AngleUnit {
+public enum AngleUnit implements DoubleMeasureUnit<AngleUnit> {
   /**
    * Angle Unit: Degree. Symbol: °.
    *
    * @since 1.0.0
    */
-  DEGREES("°", "#,##0.###'°'") {
+  DEGREES("°") {
     @Override
     @Contract(pure = true)
-    public double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit) {
-      return sourceUnit.toDegrees(sourceAngle);
+    public double convert(final double sourceAmount, @NotNull final AngleUnit sourceUnit) {
+      return sourceUnit.toDegrees(sourceAmount);
     }
 
     @Override
@@ -48,11 +43,11 @@ public enum AngleUnit {
    *
    * @since 1.0.0
    */
-  RADIANS("rad", "#,##0.#####' rad'") {
+  RADIANS("rad") {
     @Override
     @Contract(pure = true)
-    public double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit) {
-      return sourceUnit.toRadians(sourceAngle);
+    public double convert(final double sourceAmount, @NotNull final AngleUnit sourceUnit) {
+      return sourceUnit.toRadians(sourceAmount);
     }
 
     @Override
@@ -73,11 +68,6 @@ public enum AngleUnit {
    */
   @NotNull
   private final String symbol;
-  /**
-   * Format pattern to format angles.
-   */
-  @NotNull
-  private final String decimalFormatPattern;
 
   /**
    * Constructor specifying angle unit symbol.
@@ -85,28 +75,13 @@ public enum AngleUnit {
    * @param symbol symbol to use
    * @since 1.0.0
    */
-  AngleUnit(@NotNull final String symbol, @NotNull final String decimalFormatPattern) {
+  AngleUnit(@NotNull final String symbol) {
     this.symbol = symbol;
-    this.decimalFormatPattern = decimalFormatPattern;
   }
 
   /**
-   * Converts the given angle in the given unit to this unit.
-   *
-   * <p>For example, to convert 0.5 rad to degree, use:
-   * {@code AngleUnit.DEGREES.convert(0.5D, TimeUnit.RADIANS)}
-   *
-   * @param sourceAngle the angle in the given {@code sourceUnit}
-   * @param sourceUnit  the unit of the {@code sourceAngle} argument
-   * @return the converted angle in this unit
-   * @since 1.0.0
-   */
-  @Contract(pure = true)
-  public abstract double convert(final double sourceAngle, @NotNull final AngleUnit sourceUnit);
-
-  /**
    * Equivalent to
-   * {@link #convert(double, AngleUnit) DEGREES.convert(duration, this)}.
+   * {@link #convert(double, DoubleMeasureUnit) DEGREES.convert(duration, this)}.
    *
    * @param sourceAngle the angle
    * @return the converted angle,
@@ -117,7 +92,7 @@ public enum AngleUnit {
 
   /**
    * Equivalent to
-   * {@link #convert(double, AngleUnit) RADIANS.convert(duration, this)}.
+   * {@link #convert(double, DoubleMeasureUnit) RADIANS.convert(duration, this)}.
    *
    * @param sourceAngle the angle
    * @return the converted angle,
@@ -125,36 +100,6 @@ public enum AngleUnit {
    */
   @Contract(pure = true)
   public abstract double toRadians(double sourceAngle);
-
-  /**
-   * Formats the angle using the current default locale.
-   *
-   * @param angle angle to format
-   * @return formatted string with unit symbol
-   * @since 1.0.0
-   */
-  @NotNull
-  @Contract(pure = true)
-  public final String format(final double angle) {
-    return format(angle, Locale.getDefault(FORMAT));
-  }
-
-  /**
-   * Formats the angle given the given locale.
-   *
-   * @param angle angle to format
-   * @param loc   locale
-   * @return formatted string with unit symbol
-   * @since 1.0.0
-   */
-  @NotNull
-  @Contract(pure = true)
-  public final String format(final double angle, @NotNull final Locale loc) {
-    NumberFormat nf = NumberFormat.getNumberInstance(loc);
-    DecimalFormat df = (DecimalFormat) nf;
-    df.applyPattern(getDecimalFormatPattern());
-    return df.format(angle);
-  }
 
   /**
    * Normalize the given angle for this angle unit.
@@ -169,28 +114,11 @@ public enum AngleUnit {
     return convert(atan2(sin(asRadians), cos(asRadians)), RADIANS);
   }
 
-  /**
-   * Return the symbol for the angle unit.
-   *
-   * @return symbol
-   * @since 1.0.0
-   */
+  @Override
   @NotNull
   @Contract(pure = true)
   public final String getSymbol() {
     return symbol;
   }
 
-  /**
-   * Returns the decimal format pattern to be used for an angle with symbol as
-   * suffix.
-   *
-   * @return pattern
-   * @since 1.0.0
-   */
-  @NotNull
-  @Contract(pure = true)
-  public final String getDecimalFormatPattern() {
-    return decimalFormatPattern;
-  }
 }

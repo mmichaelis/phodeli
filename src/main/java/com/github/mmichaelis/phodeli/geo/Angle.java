@@ -20,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 @SuppressWarnings("WeakerAccess")
-public final class Angle implements Comparable<Angle>, Serializable {
+public final class Angle
+  implements Comparable<Angle>, Serializable, DoubleMeasure<Angle, AngleUnit> {
 
   private static final long serialVersionUID = 5653567757650975666L;
   /**
@@ -54,7 +55,7 @@ public final class Angle implements Comparable<Angle>, Serializable {
   @NotNull
   @Contract(pure = true)
   public static Angle degrees(final double degrees) {
-    return new Angle(degrees, DEGREES);
+    return angle(degrees, DEGREES);
   }
 
   /**
@@ -67,7 +68,7 @@ public final class Angle implements Comparable<Angle>, Serializable {
   @NotNull
   @Contract(pure = true)
   public static Angle radians(final double radians) {
-    return new Angle(radians, RADIANS);
+    return angle(radians, RADIANS);
   }
 
   /**
@@ -80,6 +81,20 @@ public final class Angle implements Comparable<Angle>, Serializable {
   @Contract(pure = true)
   public static List<AngleUnit> getUnits() {
     return Arrays.asList(AngleUnit.values());
+  }
+
+  /**
+   * Creates an angle with the given unit.
+   *
+   * @param amount angle amount
+   * @param unit   the angle unit
+   * @return angle
+   * @since 1.0.0
+   */
+  @NotNull
+  @Contract(pure = true)
+  public static Angle angle(final double amount, @NotNull final AngleUnit unit) {
+    return new Angle(amount, unit);
   }
 
   /**
@@ -104,16 +119,33 @@ public final class Angle implements Comparable<Angle>, Serializable {
     return get(DEGREES);
   }
 
-  /**
-   * Returns this angle in the given unit.
-   *
-   * @param unit the unit to convert to
-   * @return angle in given unit
-   * @since 1.0.0
-   */
+  @Override
   @Contract(pure = true)
   public double get(@NotNull final AngleUnit unit) {
     return unit.convert(angleAmount, angleUnit);
+  }
+
+  @NotNull
+  @Override
+  public Angle transform(@NotNull final AngleUnit unit) {
+    if (unit == angleUnit) {
+      return this;
+    }
+    return angle(get(unit), unit);
+  }
+
+  @Override
+  @NotNull
+  @Contract(pure = true)
+  public String format() {
+    return angleUnit.format(angleAmount);
+  }
+
+  @Override
+  @NotNull
+  @Contract(pure = true)
+  public String format(@NotNull final Locale loc) {
+    return angleUnit.format(angleAmount, loc);
   }
 
   /**
@@ -125,45 +157,23 @@ public final class Angle implements Comparable<Angle>, Serializable {
   @NotNull
   @Contract(pure = true)
   public Angle normalized() {
-    return new Angle(angleUnit.normalized(angleAmount), angleUnit);
-  }
-
-  /**
-   * Formats the angle using the current default locale.
-   *
-   * @return formatted string with unit symbol
-   * @since 1.0.0
-   */
-  @NotNull
-  @Contract(pure = true)
-  public String format() {
-    return angleUnit.format(angleAmount);
-  }
-
-  /**
-   * Formats the angle given the given locale.
-   *
-   * @param loc locale
-   * @return formatted string with unit symbol
-   * @since 1.0.0
-   */
-  @NotNull
-  @Contract(pure = true)
-  public String format(@NotNull final Locale loc) {
-    return angleUnit.format(angleAmount, loc);
+    return angle(angleUnit.normalized(angleAmount), angleUnit);
   }
 
   @Override
+  @Contract(pure = true)
   public int compareTo(@NotNull final Angle other) {
     return Double.compare(angleAmount, other.get(angleUnit));
   }
 
   @Override
+  @Contract(pure = true)
   public int hashCode() {
     return hash(angleAmount, angleUnit);
   }
 
   @Override
+  @Contract(pure = true)
   public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
@@ -177,6 +187,7 @@ public final class Angle implements Comparable<Angle>, Serializable {
   }
 
   @Override
+  @Contract(pure = true)
   public String toString() {
     return super.toString() + "{angleAmount=" + angleAmount + ", angleUnit=" + angleUnit + '}';
   }
