@@ -1,4 +1,4 @@
-package com.github.mmichaelis.phodeli.geo;
+package com.github.mmichaelis.phodeli.measure;
 
 import static com.github.mmichaelis.phodeli.test.LocaleHelpers.usingDefaultLocale;
 import static java.util.Arrays.stream;

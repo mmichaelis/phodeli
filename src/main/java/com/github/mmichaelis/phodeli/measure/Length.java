@@ -1,4 +1,4 @@
-package com.github.mmichaelis.phodeli.geo;
+package com.github.mmichaelis.phodeli.measure;
 
 import java.io.Serializable;
 import java.util.Locale;

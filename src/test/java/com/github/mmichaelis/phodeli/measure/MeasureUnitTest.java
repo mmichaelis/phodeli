@@ -1,4 +1,4 @@
-package com.github.mmichaelis.phodeli.geo;
+package com.github.mmichaelis.phodeli.measure;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;

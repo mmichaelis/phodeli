@@ -1,7 +1,7 @@
-package com.github.mmichaelis.phodeli.geo;
+package com.github.mmichaelis.phodeli.measure;
 
-import static com.github.mmichaelis.phodeli.geo.AngleUnit.DEGREES;
-import static com.github.mmichaelis.phodeli.geo.AngleUnit.RADIANS;
+import static com.github.mmichaelis.phodeli.measure.AngleUnit.DEGREES;
+import static com.github.mmichaelis.phodeli.measure.AngleUnit.RADIANS;
 import static java.util.Objects.hash;
 
 import java.io.Serializable;

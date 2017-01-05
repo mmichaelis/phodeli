@@ -1,4 +1,4 @@
-package com.github.mmichaelis.phodeli.geo;
+package com.github.mmichaelis.phodeli.measure;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
