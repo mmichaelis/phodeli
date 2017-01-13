@@ -36,9 +36,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -87,6 +89,8 @@ class LengthTest {
       convertMethodEntry(LengthUnit.KILOMETERS, Length::toKilometers),
       convertMethodEntry(LengthUnit.MILES, Length::toMiles))
                        .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
+  private static final Pattern VALID_FORMAT_PATTERN = Pattern
+    .compile("^[\\p{Digit}\\p{Punct}]+\\p{Space}?\\P{Digit}+");
 
   @NotNull
   private static SimpleEntry<@NotNull LengthUnit, @NotNull Function<Double, Length>> createMethodEntry(
@@ -169,16 +173,25 @@ class LengthTest {
     Length length = length(1.23456789D, YARDS);
     String result;
     try (RestoreState ignored = usingDefaultLocale(ROOT)) {
-      result = length.format();
+      result = String.format("%s", length);
     }
-    assertThat(result).isEqualTo("1.23457 yd");
+    assertThat(result).isEqualTo("1.234568 yd");
   }
 
-  @Test
-  void formatByGivenLocaleWorksAsExpected() {
-    // Only probing one given format as other formatting is tested in LengthUnit
-    Length length = length(1.23456789D, YARDS);
-    assertThat(length.format(ROOT)).isEqualTo("1.23457 yd");
+  @TestFactory
+  Stream<DynamicTest> formatByGivenLocaleWorksAsExpected() {
+    Iterator<LengthUnit> inputGenerator = stream(LengthUnit.values()).iterator();
+    Function<LengthUnit, String> nameGenerator = Enum::name;
+    ThrowingConsumer<LengthUnit> testExecutor = input -> {
+      Length length = Length.length(2.123456789D, input);
+      SoftAssertions assertions = new SoftAssertions();
+      String result = String.format(Locale.ROOT, "%s", length);
+      assertions.assertThat(result).startsWith("2");
+      assertions.assertThat(result).contains("12");
+      assertions.assertThat(result).matches(VALID_FORMAT_PATTERN);
+      assertions.assertAll();
+    };
+    return DynamicTest.stream(inputGenerator, nameGenerator, testExecutor);
   }
 
   @Test

@@ -1,20 +1,16 @@
 package com.github.mmichaelis.phodeli.measure;
 
-import static com.github.mmichaelis.phodeli.test.LocaleHelpers.usingDefaultLocale;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.mmichaelis.phodeli.test.RestoreState;
 import com.github.mmichaelis.phodeli.test.SpecificationContract;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,9 +29,6 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
  * @since 1.0.0
  */
 class LengthUnitTest {
-
-  private static final Pattern VALID_FORMAT_PATTERN = Pattern
-    .compile("^[\\p{Digit}\\p{Punct}]+\\p{Space}?\\P{Digit}+");
 
   private static Function<Double, Double> getDirectConvertFunction(
     @NotNull final LengthUnit sourceUnit,
@@ -135,55 +128,6 @@ class LengthUnitTest {
     List<String> symbols = Arrays.stream(LengthUnit.values()).map(LengthUnit::getSymbol)
       .collect(Collectors.toList());
     assertThat(symbols).doesNotHaveDuplicates();
-  }
-
-  @TestFactory
-  Stream<DynamicTest> providesDecimalFormatPattern() {
-    Iterator<LengthUnit> inputGenerator = stream(LengthUnit.values()).iterator();
-    Function<LengthUnit, String> nameGenerator = Enum::name;
-    ThrowingConsumer<LengthUnit> testExecutor = input -> assertThat(input.getDecimalFormatPattern())
-      .isNotEmpty();
-    return DynamicTest.stream(inputGenerator, nameGenerator, testExecutor);
-  }
-
-  @Test
-  void providesUniqueDecimalFormatPattern() {
-    List<String> symbols = Arrays.stream(LengthUnit.values())
-      .map(LengthUnit::getDecimalFormatPattern)
-      .collect(Collectors.toList());
-    assertThat(symbols).doesNotHaveDuplicates();
-  }
-
-  @TestFactory
-  Stream<DynamicTest> formatByDefaultLocaleWorksAsExpected() {
-    Iterator<LengthUnit> inputGenerator = stream(LengthUnit.values()).iterator();
-    Function<LengthUnit, String> nameGenerator = Enum::name;
-    ThrowingConsumer<LengthUnit> testExecutor = input -> {
-      SoftAssertions assertions = new SoftAssertions();
-      try (RestoreState ignored = usingDefaultLocale(Locale.ROOT)) {
-        String result = input.format(1.23456D);
-        assertions.assertThat(result).startsWith("1");
-        assertions.assertThat(result).contains("23");
-        assertions.assertThat(result).matches(VALID_FORMAT_PATTERN);
-        assertions.assertAll();
-      }
-    };
-    return DynamicTest.stream(inputGenerator, nameGenerator, testExecutor);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> formatByGivenLocaleWorksAsExpected() {
-    Iterator<LengthUnit> inputGenerator = stream(LengthUnit.values()).iterator();
-    Function<LengthUnit, String> nameGenerator = Enum::name;
-    ThrowingConsumer<LengthUnit> testExecutor = input -> {
-      SoftAssertions assertions = new SoftAssertions();
-      String result = input.format(2.12345D, Locale.ROOT);
-      assertions.assertThat(result).startsWith("2");
-      assertions.assertThat(result).contains("12");
-      assertions.assertThat(result).matches(VALID_FORMAT_PATTERN);
-      assertions.assertAll();
-    };
-    return DynamicTest.stream(inputGenerator, nameGenerator, testExecutor);
   }
 
   private static final class MaxPrecisionContract implements SpecificationContract {

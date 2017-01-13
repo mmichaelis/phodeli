@@ -9,22 +9,33 @@ import static com.github.mmichaelis.phodeli.test.LocaleHelpers.usingDefaultLocal
 import static com.github.mmichaelis.phodeli.test.SerializableCondition.serializable;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
+import static java.lang.Math.round;
 import static java.lang.Math.toRadians;
+import static java.lang.String.format;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.Arrays.stream;
 import static java.util.Collections.sort;
 import static java.util.Comparator.comparingDouble;
+import static java.util.Locale.Category.FORMAT;
+import static java.util.Locale.GERMAN;
 import static java.util.Locale.ROOT;
+import static java.util.Locale.getDefault;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import com.google.common.testing.EqualsTester;
 
 import com.github.mmichaelis.phodeli.test.RestoreState;
 import com.github.mmichaelis.phodeli.test.SpecificationContract;
+import com.github.mmichaelis.phodeli.test.TestName;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -35,7 +46,9 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.function.ThrowingConsumer;
+import org.slf4j.Logger;
 
 /**
  * Tests {@link Angle}.
@@ -45,11 +58,98 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
  */
 class AngleTest {
 
+  private static final Logger LOG = getLogger(lookup().lookupClass());
+
   private static final Offset<Double> TOLERANCE = Offset.offset(0.0001D);
   /**
    * Using fixed seed to provide reproducible test runs.
    */
   private static final long RANDOM_SEED = 0L;
+  private static final long TEST_RUNS = 20L;
+  private static final Function<TestInfo, String> TEST_NAME = new TestName();
+
+  @TestFactory
+  Stream<DynamicTest> radiansFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
+    Function<Double, String> displayNameGenerator =
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + format("%s", radians(input));
+    ThrowingConsumer<Double> testExecutor = (input) -> {
+      Angle angle = radians(input);
+      assertThat(format("%s", angle)).isEqualTo(format(getDefault(FORMAT), "%s", angle));
+    };
+    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> radiansFormattedCorrectly(final TestInfo testInfo) {
+    Locale testLocale = Locale.ROOT;
+    NumberFormat nf = NumberFormat.getNumberInstance(testLocale);
+    DecimalFormat df = (DecimalFormat) nf;
+    df.applyPattern("#,##0.##");
+
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
+    Function<Double, String> displayNameGenerator =
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + format("%s", radians(input));
+    ThrowingConsumer<Double> testExecutor = (input) -> {
+      Angle angle = radians(input);
+      String formatted = String.format(testLocale, "%s", angle);
+      String expectedNumber = df.format(input);
+      // ignore possibly rounded last number
+      if (Double.compare((double) round(input), input) != 0) {
+        expectedNumber = expectedNumber.substring(0, expectedNumber.length() - 1);
+      }
+      LOG.info("Radians: {} formatted to {}", input, formatted);
+      SoftAssertions assertions = new SoftAssertions();
+      assertions.assertThat(formatted).endsWith(RADIANS.getSymbol());
+      assertions.assertThat(formatted).startsWith(expectedNumber);
+      assertions.assertAll();
+    };
+    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> degreesFormattedCorrectly(final TestInfo testInfo) {
+    Locale testLocale = Locale.ROOT;
+    NumberFormat nf = NumberFormat.getNumberInstance(testLocale);
+    DecimalFormat df = (DecimalFormat) nf;
+    df.applyPattern("#,##0.##");
+
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
+    Function<Double, String> displayNameGenerator =
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + format("%s", degrees(input));
+    ThrowingConsumer<Double> testExecutor = (input) -> {
+      Angle angle = degrees(input);
+      String formatted = String.format(testLocale, "%s", angle);
+      String expectedNumber = df.format(input);
+      // ignore possibly rounded last number
+      if (Double.compare((double) round(input), input) != 0) {
+        expectedNumber = expectedNumber.substring(0, expectedNumber.length() - 1);
+      }
+      LOG.info("Degrees: {} formatted to {}", input, formatted);
+      SoftAssertions assertions = new SoftAssertions();
+      assertions.assertThat(formatted).endsWith(DEGREES.getSymbol());
+      assertions.assertThat(formatted).startsWith(expectedNumber);
+      assertions.assertAll();
+    };
+    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
+  }
+
+  @TestFactory
+  Stream<DynamicTest> degreesFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
+    Iterator<Double> inputGenerator =
+      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
+    Function<Double, String>
+      displayNameGenerator =
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + format("%s", degrees(input));
+    ThrowingConsumer<Double> testExecutor = (input) -> {
+      Angle angle = degrees(input);
+      assertThat(format("%s", angle)).isEqualTo(format(getDefault(FORMAT), "%s", angle));
+    };
+    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
+  }
 
   @Test
   void angleIsSerializable() {
@@ -149,7 +249,7 @@ class AngleTest {
     double amount = PI / 2D;
     Angle angle = radians(amount);
     try (RestoreState ignored = usingDefaultLocale(ROOT)) {
-      assertThat(angle.format()).isEqualTo("1.5708 rad");
+      assertThat(format("%s", angle)).isEqualTo("1.570796 rad");
     }
   }
 
@@ -158,7 +258,7 @@ class AngleTest {
     double amount = 90.123D;
     Angle angle = degrees(amount);
     try (RestoreState ignored = usingDefaultLocale(ROOT)) {
-      assertThat(angle.format()).isEqualTo("90.123°");
+      assertThat(format("%s", angle)).isEqualTo("90.123000°");
     }
   }
 
@@ -166,14 +266,18 @@ class AngleTest {
   void canCreateStringRepresentationOfRadiansWithGivenLocale() {
     double amount = PI / 2D;
     Angle angle = radians(amount);
-    assertThat(angle.format(ROOT)).isEqualTo("1.5708 rad");
+    try (RestoreState ignored = usingDefaultLocale(GERMAN)) {
+      assertThat(format(ROOT, "%s", angle)).isEqualTo("1.570796 rad");
+    }
   }
 
   @Test
   void canCreateStringRepresentationOfDegreesWithGivenLocale() {
     double amount = 90.123D;
     Angle angle = degrees(amount);
-    assertThat(angle.format(ROOT)).isEqualTo("90.123°");
+    try (RestoreState ignored = usingDefaultLocale(GERMAN)) {
+      assertThat(format(ROOT, "%s", angle)).isEqualTo("90.123000°");
+    }
   }
 
   @Test
@@ -218,9 +322,9 @@ class AngleTest {
   void fulfillsEqualsHashCodeContract() {
     new EqualsTester()
       .addEqualityGroup(Angle.degrees(180D), Angle.degrees(180D))
-      .addEqualityGroup(Angle.radians(180D), Angle.radians(180D))
+      .addEqualityGroup(radians(180D), radians(180D))
       .addEqualityGroup(Angle.degrees(PI), Angle.degrees(PI))
-      .addEqualityGroup(Angle.radians(PI), Angle.radians(PI))
+      .addEqualityGroup(radians(PI), radians(PI))
       .testEquals();
   }
 
@@ -231,7 +335,8 @@ class AngleTest {
     @NotNull
     private final AngleUnit targetUnit;
 
-    private AngleTransformContract(@NotNull final AngleUnit sourceUnit, @NotNull final AngleUnit targetUnit) {
+    private AngleTransformContract(@NotNull final AngleUnit sourceUnit,
+                                   @NotNull final AngleUnit targetUnit) {
       this.sourceUnit = sourceUnit;
       this.targetUnit = targetUnit;
     }

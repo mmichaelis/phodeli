@@ -1,6 +1,6 @@
 package com.github.mmichaelis.phodeli.measure;
 
-import static java.lang.String.format;
+import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface MeasureUnit {
 
+  Pattern SYMBOL_REQUIRES_SEPARATOR_PATTERN = Pattern.compile("^[\\w].*");
+  String SYMBOL_SEPARATOR = " ";
+
   /**
    * Return the symbol for the unit.
    *
@@ -25,24 +28,27 @@ public interface MeasureUnit {
   String getSymbol();
 
   /**
-   * Returns the decimal format pattern to be used for measures of this type.
+   * <p>
+   * Returns the symbol as postfix, possibly prefixed by a separator char.
+   * The default implementation determines if the symbol is an alphabetic
+   * character, which results in {@link #SYMBOL_SEPARATOR} to be prepended
+   * before the symbol. Otherwise the symbol is returned unmodified.
+   * </p>
+   * <p>
+   * For frequent use it is recommended that implementations caches the result of this method
+   * or provides an own implementation.
+   * </p>
    *
-   * @return pattern
-   * @since 1.0.0
+   * @return symbol, possibly prefixed by separator
    */
   @NotNull
   @Contract(pure = true)
-  default String getDecimalFormatPattern() {
-    String rawSymbol = getSymbol();
-    String symbol = rawSymbol
-      .replaceAll("(')", "'$1")
-      .replaceAll("([0#.,E;%\\u2030\\u00A4-])", "'$1'");
-    String separator;
-    if (rawSymbol.trim().isEmpty() || rawSymbol.matches("^\\P{Alnum}.*")) {
-      separator = "";
-    } else {
-      separator = " ";
+  default String getSymbolPostfix() {
+    String symbol = getSymbol();
+    if (SYMBOL_REQUIRES_SEPARATOR_PATTERN.matcher(symbol).matches()) {
+      return SYMBOL_SEPARATOR + symbol;
     }
-    return format("#,##0.#####%s%s", separator, symbol);
+    return symbol;
   }
+
 }

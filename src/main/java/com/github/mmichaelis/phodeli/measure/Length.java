@@ -1,7 +1,9 @@
 package com.github.mmichaelis.phodeli.measure;
 
+import static com.github.mmichaelis.phodeli.internal.FormatterUtil.formatMeasureTo;
+
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Formatter;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -249,20 +251,6 @@ public final class Length
     return length(get(unit), unit);
   }
 
-  @NotNull
-  @Override
-  @Contract(pure = true)
-  public String format() {
-    return lengthUnit.format(lengthAmount);
-  }
-
-  @NotNull
-  @Override
-  @Contract(pure = true)
-  public String format(@NotNull final Locale loc) {
-    return lengthUnit.format(lengthAmount, loc);
-  }
-
   @Override
   @Contract(pure = true)
   public int compareTo(@NotNull final Length other) {
@@ -296,11 +284,23 @@ public final class Length
            && lengthUnit == length.lengthUnit;
   }
 
-
   @Override
   @Contract(pure = true)
   public String toString() {
     return super.toString() + "{" + "lengthAmount=" + lengthAmount + ", lengthUnit=" + lengthUnit
            + '}';
+  }
+
+  @Override
+  public void formatTo(@NotNull final Formatter formatter,
+                       final int flags,
+                       final int width,
+                       final int precision) {
+    formatMeasureTo(formatter,
+                    lengthAmount,
+                    lengthUnit.getSymbolPostfix(),
+                    flags,
+                    width,
+                    precision);
   }
 }

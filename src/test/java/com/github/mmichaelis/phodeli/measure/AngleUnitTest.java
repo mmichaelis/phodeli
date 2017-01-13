@@ -5,21 +5,16 @@ import static com.github.mmichaelis.phodeli.measure.AngleUnit.RADIANS;
 import static com.github.mmichaelis.phodeli.test.SerializableCondition.serializable;
 import static java.lang.Double.MAX_VALUE;
 import static java.lang.Math.PI;
-import static java.lang.Math.round;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 import static java.lang.invoke.MethodHandles.lookup;
-import static java.util.Locale.Category.FORMAT;
-import static java.util.Locale.getDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import com.github.mmichaelis.phodeli.test.TestName;
+
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -49,8 +44,7 @@ class AngleUnitTest {
 
   private static final Offset<Double> TOLERANCE = Offset.offset(0.0001D);
   private static final long TEST_RUNS = 20L;
-  private static final Function<TestInfo, String> TEST_NAME =
-    input -> input.getTestMethod().map(Method::getName).orElse("unknown");
+  private static final Function<TestInfo, String> TEST_NAME = new TestName();
 
   @Test
   void degreesIsSerializable() {
@@ -84,7 +78,7 @@ class AngleUnitTest {
       new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
     Function<Double, String>
       displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor = (input) -> {
       SoftAssertions assertions = new SoftAssertions();
       assertions.assertThat(DEGREES.convert(input, DEGREES)).isEqualTo(input);
@@ -100,7 +94,7 @@ class AngleUnitTest {
       new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
     Function<Double, String>
       displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor = (input) -> {
       SoftAssertions assertions = new SoftAssertions();
       assertions.assertThat(RADIANS.convert(input, DEGREES)).isCloseTo(toRadians(input), TOLERANCE);
@@ -116,7 +110,7 @@ class AngleUnitTest {
       new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String>
       displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor = (input) -> {
       SoftAssertions assertions = new SoftAssertions();
       assertions.assertThat(RADIANS.convert(input, RADIANS)).isEqualTo(input);
@@ -131,7 +125,7 @@ class AngleUnitTest {
     Iterator<Double> inputGenerator =
       new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
     Function<Double, String> displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor = (input) -> {
       SoftAssertions assertions = new SoftAssertions();
       assertions.assertThat(DEGREES.convert(input, RADIANS)).isCloseTo(toDegrees(input), TOLERANCE);
@@ -157,27 +151,26 @@ class AngleUnitTest {
                 MAX_VALUE)
         .iterator();
     Function<Double, String> displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor =
       input -> {
         SoftAssertions assertions = new SoftAssertions();
         double normalized = DEGREES.normalized(input);
-        String inputAsString = DEGREES.format(input);
-        LOG.info("Degrees: {} normalized to {}", inputAsString, DEGREES.format(normalized));
+        LOG.info("Degrees: {} normalized to {}", input, normalized);
         assertions.assertThat(normalized)
-          .describedAs("Normalized value of %s must be greater than or equal to -180°",
-                       inputAsString)
+          .describedAs("Normalized value of %f must be greater than or equal to -180°",
+                       input)
           .isGreaterThanOrEqualTo(-180D);
         assertions.assertThat(normalized)
-          .describedAs("Normalized value of %s must be less than or equal to 180°", inputAsString)
+          .describedAs("Normalized value of %f must be less than or equal to 180°", input)
           .isLessThanOrEqualTo(180D);
         if (input >= -180D && input <= 180D) {
           assertions.assertThat(normalized)
-            .describedAs("Already normalized input %s should not change too much.", inputAsString)
+            .describedAs("Already normalized input %f should not change too much.", input)
             .isCloseTo(input, TOLERANCE);
         }
         assertions.assertThat(normalized)
-          .describedAs("Normalizing %s again should provide a similar result.", inputAsString)
+          .describedAs("Normalizing %f again should provide a similar result.", input)
           .isCloseTo(DEGREES.normalized(normalized), TOLERANCE);
         assertions.assertAll();
       };
@@ -190,118 +183,39 @@ class AngleUnitTest {
     Iterator<Double> inputGenerator =
       Arrays
         .asList(-MAX_VALUE,
-                -PI * 2 - offset, -PI * 2, -PI * 2 + offset,
+                -PI * 2.0 - offset, -PI * 2.0, -PI * 2.0 + offset,
                 -PI - offset, -PI, -PI + offset,
                 -PI / 2D - offset, -PI / 2D, -PI / 2D + offset,
                 -offset, 0D, Double.MIN_VALUE, offset,
                 PI / 2D - offset, PI / 2D, PI / 2D + offset,
                 PI - offset, PI, PI + offset,
-                PI * 2 - offset, PI * 2, PI * 2 + offset,
+                PI * 2.0 - offset, PI * 2.0, PI * 2.0 + offset,
                 MAX_VALUE)
         .iterator();
     Function<Double, String> displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
+      (input) -> TEST_NAME.apply(testInfo) + ", input: " + input;
     ThrowingConsumer<Double> testExecutor =
       input -> {
         SoftAssertions assertions = new SoftAssertions();
         double normalized = RADIANS.normalized(input);
-        String inputAsString = RADIANS.format(input);
-        LOG.info("Radians: {} normalized to {}", inputAsString, RADIANS.format(normalized));
+        LOG.info("Radians: {} normalized to {}", input, normalized);
         assertions.assertThat(normalized)
-          .describedAs("Normalized value of %s must be greater than or equal to -π rad",
-                       inputAsString)
+          .describedAs("Normalized value of %f must be greater than or equal to -π rad",
+                       input)
           .isGreaterThanOrEqualTo(-PI);
         assertions.assertThat(normalized)
-          .describedAs("Normalized value of %s must be less than or equal to π rad", inputAsString)
+          .describedAs("Normalized value of %f must be less than or equal to π rad", input)
           .isLessThanOrEqualTo(PI);
         if (input >= -PI && input <= PI) {
           assertions.assertThat(normalized)
-            .describedAs("Already normalized input %s should not change too much.", inputAsString)
+            .describedAs("Already normalized input %f should not change too much.", input)
             .isCloseTo(input, TOLERANCE);
         }
         assertions.assertThat(normalized)
-          .describedAs("Normalizing %s again should provide a similar result.", inputAsString)
+          .describedAs("Normalizing %f again should provide a similar result.", input)
           .isCloseTo(DEGREES.normalized(normalized), TOLERANCE);
         assertions.assertAll();
       };
-    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> radiansFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator =
-      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
-    Function<Double, String>
-      displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
-    ThrowingConsumer<Double> testExecutor = (input) ->
-      assertThat(RADIANS.format(input)).isEqualTo(RADIANS.format(input, getDefault(FORMAT)));
-    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> degreesFormatDefaultsToDefaultLocale(final TestInfo testInfo) {
-    Iterator<Double> inputGenerator =
-      new Random(RANDOM_SEED).doubles(TEST_RUNS, -720D, 720D).iterator();
-    Function<Double, String>
-      displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
-    ThrowingConsumer<Double> testExecutor = (input) ->
-      assertThat(DEGREES.format(input)).isEqualTo(DEGREES.format(input, getDefault(FORMAT)));
-    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> radiansFormattedCorrectly(final TestInfo testInfo) {
-    Locale testLocale = Locale.ROOT;
-    NumberFormat nf = NumberFormat.getNumberInstance(testLocale);
-    DecimalFormat df = (DecimalFormat) nf;
-    df.applyPattern("#,##0.##");
-
-    Iterator<Double> inputGenerator =
-      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
-    Function<Double, String> displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + RADIANS.format(input);
-    ThrowingConsumer<Double> testExecutor = (input) -> {
-      String formatted = RADIANS.format(input, testLocale);
-      String expectedNumber = df.format(input);
-      // ignore possibly rounded last number
-      if (round(input) != input) {
-        expectedNumber = expectedNumber.substring(0, expectedNumber.length() - 1);
-      }
-      LOG.info("Radians: {} formatted to {}", input, formatted);
-      SoftAssertions assertions = new SoftAssertions();
-      assertions.assertThat(formatted).endsWith(RADIANS.getSymbol());
-      assertions.assertThat(formatted).startsWith(expectedNumber);
-      assertions.assertAll();
-    };
-    return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
-  }
-
-  @TestFactory
-  Stream<DynamicTest> degreesFormattedCorrectly(final TestInfo testInfo) {
-    Locale testLocale = Locale.ROOT;
-    NumberFormat nf = NumberFormat.getNumberInstance(testLocale);
-    DecimalFormat df = (DecimalFormat) nf;
-    df.applyPattern("#,##0.##");
-
-    Iterator<Double> inputGenerator =
-      new Random(RANDOM_SEED).doubles(TEST_RUNS, -PI * 4D, PI * 4D).iterator();
-    Function<Double, String> displayNameGenerator =
-      (input) -> TEST_NAME.apply(testInfo) + ", input: " + DEGREES.format(input);
-    ThrowingConsumer<Double> testExecutor = (input) -> {
-      String formatted = DEGREES.format(input, testLocale);
-      String expectedNumber = df.format(input);
-      // ignore possibly rounded last number
-      if (round(input) != input) {
-        expectedNumber = expectedNumber.substring(0, expectedNumber.length() - 1);
-      }
-      LOG.info("Degrees: {} formatted to {}", input, formatted);
-      SoftAssertions assertions = new SoftAssertions();
-      assertions.assertThat(formatted).endsWith(DEGREES.getSymbol());
-      assertions.assertThat(formatted).startsWith(expectedNumber);
-      assertions.assertAll();
-    };
     return DynamicTest.stream(inputGenerator, displayNameGenerator, testExecutor);
   }
 

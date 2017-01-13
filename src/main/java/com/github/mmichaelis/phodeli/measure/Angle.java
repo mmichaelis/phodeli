@@ -1,13 +1,15 @@
 package com.github.mmichaelis.phodeli.measure;
 
+import static com.github.mmichaelis.phodeli.internal.FormatterUtil.formatMeasureTo;
 import static com.github.mmichaelis.phodeli.measure.AngleUnit.DEGREES;
 import static com.github.mmichaelis.phodeli.measure.AngleUnit.RADIANS;
 import static java.util.Objects.hash;
+import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Contract;
@@ -42,7 +44,7 @@ public final class Angle
    */
   private Angle(final double angleAmount, @NotNull final AngleUnit angleUnit) {
     this.angleAmount = angleAmount;
-    this.angleUnit = angleUnit;
+    this.angleUnit = requireNonNull(angleUnit, "angleUnit must not be null.");
   }
 
   /**
@@ -134,20 +136,6 @@ public final class Angle
     return angle(get(unit), unit);
   }
 
-  @Override
-  @NotNull
-  @Contract(pure = true)
-  public String format() {
-    return angleUnit.format(angleAmount);
-  }
-
-  @Override
-  @NotNull
-  @Contract(pure = true)
-  public String format(@NotNull final Locale loc) {
-    return angleUnit.format(angleAmount, loc);
-  }
-
   /**
    * Provides a normalized angle.
    *
@@ -192,4 +180,16 @@ public final class Angle
     return super.toString() + "{angleAmount=" + angleAmount + ", angleUnit=" + angleUnit + '}';
   }
 
+  @Override
+  public void formatTo(@NotNull final Formatter formatter,
+                       final int flags,
+                       final int width,
+                       final int precision) {
+    formatMeasureTo(formatter,
+                    angleAmount,
+                    angleUnit.getSymbolPostfix(),
+                    flags,
+                    width,
+                    precision);
+  }
 }
