@@ -2,6 +2,13 @@
 
 Bookmarks used for research for this project.
 
+## Java
+
+### Generics
+
+* [Self-bounding generics](http://www.artima.com/weblogs/viewpost.jsp?thread=136394)
+* [AngelikaLanger.com - Java Generics FAQs - Programming With Java Generics - Angelika Langer Training/Consulting](http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ206)
+
 ## Coordinates
 
 * [Geographic coordinate system - Wikipedia](https://en.wikipedia.org/wiki/Geographic_coordinate_system)

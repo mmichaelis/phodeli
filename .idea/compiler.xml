@@ -6,10 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="photographersdelight" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="phodeli-internal_main" target="1.8" />
+      <module name="phodeli-internal_test" target="1.8" />
+      <module name="phodeli-measure_main" target="1.8" />
+      <module name="phodeli-measure_test" target="1.8" />
+      <module name="phodeli-test_main" target="1.8" />
+      <module name="phodeli-test_test" target="1.8" />
+      <module name="phodeli_main" target="1.8" />
+      <module name="phodeli_test" target="1.8" />
+      <module name="photographers-delight_main" target="1.8" />
+      <module name="photographers-delight_test" target="1.8" />
       <module name="photographersdelight" target="1.8" />
     </bytecodeTargetLevel>
   </component>

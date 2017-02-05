@@ -1,0 +1,6 @@
+rootProject.name = 'phodeli'
+
+include 'phodeli-internal'
+include 'phodeli-measure'
+include 'phodeli-test'
+

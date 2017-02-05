@@ -1,0 +1,9 @@
+dependencies {
+  compile("org.slf4j:slf4j-api:${property('slf4j.version')}")
+  compile("org.jetbrains:annotations:${property('annotations.version')}")
+  compile("org.assertj:assertj-core:${property('assertj.version')}")
+  compile("junit:junit:${property('junit.version')}")
+  compile("org.junit.jupiter:junit-jupiter-api:${property('junit.jupiter.version')}")
+
+  runtime("org.junit.jupiter:junit-jupiter-engine:${property('junit.jupiter.version')}")
+}

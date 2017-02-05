@@ -2,7 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/test/resources/logback-test.properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gradle.properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/phodeli-test/src/main/resources/logback-test.properties" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/target/test-classes/logback-test.properties" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>

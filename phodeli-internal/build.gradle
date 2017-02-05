@@ -1,0 +1,16 @@
+dependencies {
+  compile("org.slf4j:slf4j-api:${property('slf4j.version')}")
+  compile("org.jetbrains:annotations:${property('annotations.version')}")
+
+  testCompile("org.mockito:mockito-core:${property('mockito.version')}")
+  testCompile("com.google.guava:guava-testlib:${property('guava.version')}")
+  testCompile("org.slf4j:jul-to-slf4j:${property('slf4j.version')}")
+  testCompile("ch.qos.logback:logback-classic:${property('logback.version')}")
+  testCompile("org.junit.jupiter:junit-jupiter-api:${property('junit.jupiter.version')}")
+  testCompile("junit:junit:${property('junit.version')}")
+  testCompile("org.junit.jupiter:junit-jupiter-api:${property('junit.jupiter.version')}")
+  testCompile("org.assertj:assertj-core:${property('assertj.version')}")
+
+  testRuntime("org.junit.jupiter:junit-jupiter-engine:${property('junit.jupiter.version')}")
+  testRuntime("org.junit.vintage:junit-vintage-engine:${property('junit.vintage.version')}")
+}

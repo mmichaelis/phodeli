@@ -2,7 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/photographersdelight.iml" filepath="$PROJECT_DIR$/photographersdelight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal.iml" group="phodeli-internal" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal_main.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal_main.iml" group="phodeli-internal" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal_test.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-internal/phodeli-internal_test.iml" group="phodeli-internal" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure.iml" group="phodeli-measure" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure_main.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure_main.iml" group="phodeli-measure" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure_test.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-measure/phodeli-measure_test.iml" group="phodeli-measure" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test.iml" group="phodeli-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test_main.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test_main.iml" group="phodeli-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test_test.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli-test/phodeli-test_test.iml" group="phodeli-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli_main.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli_main.iml" group="phodeli" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/phodeli_test.iml" filepath="$PROJECT_DIR$/.idea/modules/phodeli_test.iml" group="phodeli" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/photographers-delight.iml" filepath="$PROJECT_DIR$/.idea/modules/photographers-delight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/photographers-delight_main.iml" filepath="$PROJECT_DIR$/.idea/modules/photographers-delight_main.iml" group="photographers-delight" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/photographers-delight_test.iml" filepath="$PROJECT_DIR$/.idea/modules/photographers-delight_test.iml" group="photographers-delight" />
     </modules>
   </component>
 </project>

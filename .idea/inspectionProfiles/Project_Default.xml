@@ -7,6 +7,7 @@
     <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_limit" value="1" />
     </inspection_tool>
+    <inspection_tool class="AutoCloseableResource" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BadExceptionDeclared" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="exceptionsString" value="" />
       <option name="exceptions">
@@ -16,6 +17,10 @@
       <option name="ignoreLibraryOverrides" value="false" />
     </inspection_tool>
     <inspection_tool class="CallToStringConcatCanBeReplacedByOperator" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ChannelResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ClashingGetters" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_limit" value="80" />
     </inspection_tool>
@@ -56,7 +61,37 @@
     </inspection_tool>
     <inspection_tool class="FieldMayBeFinal" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FloatingPointEquality" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyAssignmentCanBeOperatorAssignment" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreLazyOperators" value="true" />
+      <option name="ignoreObscureOperators" value="false" />
+    </inspection_tool>
+    <inspection_tool class="GroovyAssignmentToForLoopParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyAssignmentToMethodParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyConditionalCanBeConditionalCall" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyConditionalCanBeElvis" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyEmptyCatchBlock" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyEmptyFinallyBlock" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyEmptyTryBlock" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyIfStatementWithTooManyBranches" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="3" />
+    </inspection_tool>
+    <inspection_tool class="GroovyListGetCanBeKeyedAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyListSetCanBeKeyedAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyLoopStatementThatDoesntLoop" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyMapGetCanBeKeyedAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyMapPutCanBeKeyedAccess" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyNestedAssignment" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyRangeTypeCheck" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyResultOfAssignmentUsed" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyReturnFromClosureCanBeImplicit" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyReturnFromFinallyBlock" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovySwitchStatementWithNoDefault" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GroovyThrowFromFinallyBlock" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="HtmlTagCanBeJavadocTag" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IOResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredTypesString" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringBufferInputStream,java.io.CharArrayWriter,java.io.CharArrayReader,java.io.StringWriter,java.io.StringReader" />
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
     <inspection_tool class="ImplicitNumericConversion" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreWideningConversions" value="false" />
       <option name="ignoreCharConversions" value="false" />
@@ -139,6 +174,7 @@
       <option name="myAdditionalJavadocTags" value="" />
       <IGNORE_DUPLICATED_THROWS_TAGS value="false" />
     </inspection_tool>
+    <inspection_tool class="JavaStylePropertiesInvocation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="JavadocHtmlLint" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="LiteralAsArgToStringEquals" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="LocalCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true">
@@ -209,6 +245,9 @@
     <inspection_tool class="SerializableWithUnconstructableAncestor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SimplifiableAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SocketResource" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="insideTryAllowed" value="false" />
+    </inspection_tool>
     <inspection_tool class="SwitchStatementsWithoutDefault" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreFullyCoveredEnums" value="false" />
     </inspection_tool>
@@ -223,6 +262,10 @@
     </inspection_tool>
     <inspection_tool class="UnnecessaryConstantArrayCreationExpression" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryInheritDoc" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedCatchParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_ignoreCatchBlocksWithComments" value="false" />
+      <option name="m_ignoreTestCases" value="false" />
+    </inspection_tool>
     <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignorableAnnotations">

@@ -1,4 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Directories for personal use
+tmp/
+user/
+
 ### macOS template
 *.DS_Store
 .AppleDouble

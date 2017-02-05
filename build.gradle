@@ -1,0 +1,96 @@
+buildscript {
+  repositories {
+    // mavenLocal()
+    maven {url 'https://plugins.gradle.org/m2/'}
+    maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+  }
+  dependencies {
+    classpath "org.junit.platform:junit-platform-gradle-plugin:${property('junit.platform.version')}"
+  }
+}
+
+repositories {
+  jcenter()
+  mavenCentral()
+}
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+
+  repositories {
+    // mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven {url 'https://oss.sonatype.org/content/repositories/snapshots'}
+  }
+
+  tasks.withType(JavaCompile) {
+    sourceCompatibility = rootProject.property('sourceCompatibility')
+    targetCompatibility = rootProject.property('targetCompatibility')
+    options.encoding = rootProject.property('encoding')
+  }
+
+  // See: http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ
+  compileJava.options*.compilerArgs = [
+    '-Xlint:cast',
+    '-Xlint:classfile',
+    '-Xlint:deprecation',
+    '-Xlint:dep-ann',
+    '-Xlint:divzero',
+    '-Xlint:empty',
+    '-Xlint:fallthrough',
+    '-Xlint:finally',
+    '-Xlint:overrides',
+    '-Xlint:path',
+    '-Xlint:processing',
+    '-Xlint:rawtypes',
+    '-Xlint:serial',
+    '-Xlint:static',
+    '-Xlint:try',
+    '-Xlint:unchecked',
+    '-Xlint:varargs',
+    '-Xlint:-options',
+    '-Werror'
+  ]
+
+  // See: http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ
+  compileTestJava.options*.compilerArgs = [
+    '-Xlint:cast',
+    '-Xlint:classfile',
+    '-Xlint:deprecation',
+    '-Xlint:dep-ann',
+    '-Xlint:divzero',
+    '-Xlint:empty',
+    '-Xlint:fallthrough',
+    '-Xlint:finally',
+    '-Xlint:path',
+    '-Xlint:processing',
+    '-Xlint:rawtypes',
+    '-Xlint:serial',
+    '-Xlint:static',
+    '-Xlint:unchecked',
+    '-Xlint:varargs',
+    '-Xlint:-options',
+    '-Xlint:-overrides'
+  ]
+
+  compileTestJava {
+    options.compilerArgs += '-parameters'
+  }
+
+}
+
+subprojects {
+  apply plugin: 'maven'
+  apply plugin: 'org.junit.platform.gradle.plugin'
+
+  project.group = rootProject.group
+  project.version = rootProject.version
+}
+
+task wrapper(type: Wrapper) {
+  description = 'Generates gradlew[.bat] scripts'
+  gradleVersion = '3.3'
+}
